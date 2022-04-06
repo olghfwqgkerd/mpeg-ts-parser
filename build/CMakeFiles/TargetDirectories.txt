@@ -1,0 +1,3 @@
+/home/lab/Downloads/TS_parser_template/build/CMakeFiles/rebuild_cache.dir
+/home/lab/Downloads/TS_parser_template/build/CMakeFiles/edit_cache.dir
+/home/lab/Downloads/TS_parser_template/build/CMakeFiles/TS-PARSER.dir

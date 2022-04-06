@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lab/Downloads/TS_parser_template/tsCommon.h
+cstdint
+-
+cinttypes
+-
+cfloat
+-
+climits
+-
+cstddef
+-
+intrin.h
+-
+x86intrin.h
+-
+
+/home/lab/Downloads/TS_parser_template/tsTransportStream.cpp
+tsTransportStream.h
+/home/lab/Downloads/TS_parser_template/tsTransportStream.h
+iostream
+-
+
+/home/lab/Downloads/TS_parser_template/tsTransportStream.h
+tsCommon.h
+/home/lab/Downloads/TS_parser_template/tsCommon.h
+string
+-
+
