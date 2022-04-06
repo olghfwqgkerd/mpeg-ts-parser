@@ -1,0 +1,4 @@
+/.vscode
+/build
+CMakeList.txt
+example_new.ts
