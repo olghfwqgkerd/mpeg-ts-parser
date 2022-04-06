@@ -1,4 +1,4 @@
 /.vscode
 /build
-CMakeList.txt
+CMakeLists.txt
 example_new.ts
