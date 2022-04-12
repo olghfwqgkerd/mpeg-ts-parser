@@ -1,4 +1,6 @@
 #include "TransportStream.h"
+#include <iostream>
+#include <iomanip>
 
 //=============================================================================================================================================================================
 // TS_Packet
@@ -72,7 +74,7 @@ void TS_Packet::ParseHeader(const uint8_t* Input)
 
 void TS_Packet::PrintHeader() const
 {
-    printf("TS:\tSB=%d\tE=%d\tS=%d\tT=%d\tPID=%d\tTSC=%d\tAFC=%d\tCC=%d\t",H_SB,H_E,H_S,H_T,H_PID,H_TSC,H_AFC,H_CC);
+    printf("TS: SB=%2d E=%1d S=%1d T=%1d PID=%4d TSC=%1d AFC=%1d CC=%2d ",H_SB,H_E,H_S,H_T,H_PID,H_TSC,H_AFC,H_CC);
 }
 
 uint8_t TS_Packet::get_H_SB()
@@ -177,6 +179,6 @@ void TS_Packet::PrintAdaptationField() const
 {   
     if(H_AFC == 2 || H_AFC ==3)
     {
-        printf("AF:\tAFL=%d\tDC=%d\tRA=%d\tESP=%d\tPR=%d\tOR=%d\tSP=%d\tTP=%d\tEX=%d\t",AF_AFL, AF_DC, AF_RA, AF_ESP, AF_PR, AF_OR, AF_SP, AF_TP, AF_EX);
+        printf("AF: AFL=%2d DC=%1d RA=%1d ESP=%1d PR=%1d OR=%1d SP=%1d TP=%1d EX=%1d ",AF_AFL, AF_DC, AF_RA, AF_ESP, AF_PR, AF_OR, AF_SP, AF_TP, AF_EX);
     }
 }

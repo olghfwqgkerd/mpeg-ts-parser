@@ -20,13 +20,13 @@ int main(int argc, char *argv[ ], char *envp[ ])
   TS_Packet* arrayOfTSpacket = new TS_Packet[length/188];
   uint8_t* buffer = new uint8_t[size];
 
-  for(uint32_t i = 0; i < length/188; i++)
+  for(uint32_t i = 0; i < 25; i++)
   {
     fread( buffer, sizeof( uint8_t ), size, file );
     arrayOfTSpacket[i].ParseHeader( buffer );
   }
   
-  for(uint32_t i = 0; i < length/188; i++)
+  for(uint32_t i = 0; i < 25; i++)
   {
     printf("%010d ", tsPacketId);
     arrayOfTSpacket[i].PrintHeader();
