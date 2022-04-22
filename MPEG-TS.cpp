@@ -5,7 +5,6 @@
 
 int main(int argc, char *argv[ ], char *envp[ ])
 {
-  uint32_t tsPacketId = 0;
   uint64_t length = 0;
   const int size = 188;
   TS_Packet tsPacket;
@@ -20,19 +19,19 @@ int main(int argc, char *argv[ ], char *envp[ ])
   TS_Packet* arrayOfTSpacket = new TS_Packet[length/188];
   uint8_t* buffer = new uint8_t[size];
 
-  for(uint32_t i = 0; i < 25; i++)
+  for(uint32_t i = 0; i < 25; i++)  //length/188
   {
     fread( buffer, sizeof( uint8_t ), size, file );
     arrayOfTSpacket[i].ParseHeader( buffer );
   }
   
-  for(uint32_t i = 0; i < 25; i++)
+  for(uint32_t i = 0; i < 25; i++)  //length/188
   {
-    printf("%010d ", tsPacketId);
+    printf("%010d ", i);  // Packet ID
     arrayOfTSpacket[i].PrintHeader();
     arrayOfTSpacket[i].PrintAdaptationField();
+    //arrayOfTSpacket[i].PrintIsPayload();
     printf("\n");
-    tsPacketId++;
   }
 
   fclose( file );

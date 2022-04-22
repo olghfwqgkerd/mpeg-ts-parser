@@ -66,55 +66,16 @@ void TS_Packet::ParseHeader(const uint8_t* Input)
     uint32_t tmp_H_CC = tmp & H_CCmask;
     H_CC = tmp_H_CC;
 
-    if(H_AFC == 2 || H_AFC ==3)
+    if(H_AFC == 2 || H_AFC == 3)
     {
         ParseAdaptationField(Input);
     }
+    else ParsePayload(Input, H_AFC, AF_AFL);
 }
 
 void TS_Packet::PrintHeader() const
 {
     printf("TS: SB=%2d E=%1d S=%1d T=%1d PID=%4d TSC=%1d AFC=%1d CC=%2d ",H_SB,H_E,H_S,H_T,H_PID,H_TSC,H_AFC,H_CC);
-}
-
-uint8_t TS_Packet::get_H_SB()
-{
-    return H_SB;
-}
-
-uint8_t TS_Packet::get_H_E()
-{
-    return H_E;
-}
-
-uint8_t TS_Packet::get_H_S()
-{
-    return H_S;
-}
-
-uint8_t TS_Packet::get_H_T()
-{
-    return H_T;
-}
-
-uint16_t TS_Packet::get_H_PID()
-{
-    return H_PID;
-}
-
-uint8_t TS_Packet::get_H_TSC()
-{
-    return H_TSC;
-}
-
-uint8_t TS_Packet::get_H_AFC()
-{
-    return H_AFC;
-}
-
-uint8_t TS_Packet::get_H_CC()
-{
-    return H_CC;
 }
 
 void TS_Packet::ParseAdaptationField(const uint8_t* Input)
@@ -173,6 +134,8 @@ void TS_Packet::ParseAdaptationField(const uint8_t* Input)
         uint16_t tmp_AF_EX = tmp & mask;
         AF_EX = tmp_AF_EX;
 
+        ParsePayload(Input, H_AFC, AF_AFL);
+
 }
 
 void TS_Packet::PrintAdaptationField() const
@@ -180,5 +143,45 @@ void TS_Packet::PrintAdaptationField() const
     if(H_AFC == 2 || H_AFC ==3)
     {
         printf("AF: AFL=%2d DC=%1d RA=%1d ESP=%1d PR=%1d OR=%1d SP=%1d TP=%1d EX=%1d ",AF_AFL, AF_DC, AF_RA, AF_ESP, AF_PR, AF_OR, AF_SP, AF_TP, AF_EX);
+    }
+}
+
+void TS_Packet::ParsePayload(const uint8_t* Input, uint8_t H_AFC, uint8_t AF_AFL)
+{
+    switch(H_AFC)
+    {
+        case 2:     // tylko pole AF
+            isPayload = false;
+        break;
+        case 3:     // po polu AF jest pole Payload
+            isPayload = true;
+            payload = new uint8_t[184 - (1 + AF_AFL)];
+            for(uint8_t i = 0; i < (184 - (1 + AF_AFL)); i++)
+            {
+                payload[i] = Input[i + 4 + 1 + AF_AFL];
+            }
+        break;
+        default:    // nie ma pola AF jest tylko payload
+            isPayload = true;
+            payload = new uint8_t[184];
+            for(uint8_t i = 0; i < 184; i++)
+            {
+                payload[i] = Input[i + 4 + 1 + AF_AFL];
+            }
+        break;      
+        //  DLUGOSC HEAD PES 6 BITOW BEDZIE 1 TS
+    }
+}
+
+void TS_Packet::PrintIsPayload() const
+{
+    switch(isPayload)
+    {
+        case true:
+            printf("Pakiet zawierta Payload.");
+        break;
+        case false:
+            printf("Pakiet NIE zawiera Payload!");
+        break;
     }
 }

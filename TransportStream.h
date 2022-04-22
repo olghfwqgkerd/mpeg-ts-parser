@@ -82,38 +82,39 @@ protected:
 
   uint16_t H_PID = 0;
 
+  uint8_t* payload;
+
+  bool isPayload;
+
 public:
-  /**enum class ePID : uint16_t
-  {
-    PAT  = 0x0000,
-    CAT  = 0x0001,
-    TSDT = 0x0002,
-    IPMT = 0x0003,
-    NIT  = 0x0010, //DVB specific PID
-    SDT  = 0x0011, //DVB specific PID
-    NuLL = 0x1FFF,
-  };
-  void     Reset();
-  **/
+  void ParseHeader(const uint8_t* Input);
+  void PrintHeader() const;
 
-  void  ParseHeader(const uint8_t* Input);
-  void  PrintHeader() const;
+  void ParseAdaptationField(const uint8_t* Input);
+  void PrintAdaptationField() const;
 
-  void  ParseAdaptationField(const uint8_t* Input);
-  void  PrintAdaptationField() const;
+  void ParsePayload(const uint8_t* Input, uint8_t H_AFC, uint8_t AF_AFL);
+  void PrintIsPayload() const;
+  //void  PrintAdaptationField() const;
 
-  uint8_t   get_H_SB();
-  uint8_t   get_H_E();
-  uint8_t   get_H_S();
-  uint8_t   get_H_T();
-  uint16_t  get_H_PID();
-  uint8_t   get_H_TSC();
-  uint8_t   get_H_AFC();
-  uint8_t   get_H_CC();
- 
-  //TODO
-  //bool     hasAdaptationField() const { /*TODO*/ }
-  //bool     hasPayload        () const { /*TODO*/ }
 };
 
 //=============================================================================================================================================================================
+
+class PES_Packet
+{
+protected:
+
+public:
+
+  
+};
+
+//=============================================================================================================================================================================
+/**
+ * PES tablica dynamiczna []
+ * 
+ * 
+ * 
+ * 
+ **/
