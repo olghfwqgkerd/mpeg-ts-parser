@@ -29,7 +29,7 @@ Payload unit start indicator (S  ) :  1 bit
 Transport priority           (T  ) :  1 bit
 Packet Identifier            (PID) : 13 bits
 Transport scrambling control (TSC) :  2 bits
-Adaptation field control     (AFC) :  2 bits          if 2 - only adaptation field, if 3 - adaptation field + payload
+Adaptation field control     (AFC) :  2 bits  if 2 - only adaptation field, if 3 - adaptation field + payload
 Continuity counter           (CC ) :  4 bits
 
 =============================================================================================================================================================================
