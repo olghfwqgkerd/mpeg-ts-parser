@@ -4,23 +4,24 @@
 
 /*
 MPEG-TS packet:
-`        3                   2                   1                   0  `
-`      1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0  `
-`     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
-`   0 |                             Header                            | `
-`     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
-`   4 |                  Adaptation field + Payload                   | `
+`                    4               3               2               1  `
+`      8 7 6 5 4 3 2 1 8 7 6 5 4 3 2 1 8 7 6 5 4 3 2 1 8 7 6 5 4 3 2 1  `
+`   1 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
+`     |                             Header                            | `
+`   4 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
+`   5 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
+`     |                  Adaptation field + Payload                   | `
 `     |                                                               | `
-` 184 |                                                               | `
-`     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
+`     |                                                               | `
+` 188 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
 
 =============================================================================================================================================================================
 
 MPEG-TS packet header:
-`        3                   2                   1                   0  `
-`      1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0  `
+`                    4               3               2               1  `
+`      8 7 6 5 4 3 2 1 8 7 6 5 4 3 2 1 8 7 6 5 4 3 2 1 8 7 6 5 4 3 2 1  `
 `     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
-`   0 |       SB      |E|S|T|           PID           |TSC|AFC|   CC  | `
+`     |       SB      |E|S|T|           PID           |TSC|AFC|   CC  | `
 `     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ `
 
 Sync byte                    (SB ) :  8 bits
@@ -29,16 +30,16 @@ Payload unit start indicator (S  ) :  1 bit
 Transport priority           (T  ) :  1 bit
 Packet Identifier            (PID) : 13 bits
 Transport scrambling control (TSC) :  2 bits
-Adaptation field control     (AFC) :  2 bits  if 2 - only adaptation field, if 3 - adaptation field + payload
+Adaptation field control     (AFC) :  2 bits if 2 - only adaptation field, if 3 - adaptation field + payload
 Continuity counter           (CC ) :  4 bits
 
 =============================================================================================================================================================================
 
 MPEG-TS adaptation field:
 `                                                                       `
-`      1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6                                  `
+`      2 1 8 7 6 5 4 3 2 1 8 7 6 5 4 3                                  `
 `     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- . . . -+-+-+-+-+-+-+-+-+-+-+-+ `
-`   0 |               |D|R|E|P|O|S|T|E|                 |             | `
+`     |               |D|R|E|P|O|S|T|E|                 |             | `
 `     |      AFL      |C|A|S|R|R|P|P|X|      optional   |   optional  | `
 `     |               | | |P| | | | | |      fields     |   stuffing  | `
 `     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+- . . . -+-+-+-+-+-+-+-+-+-+-+-+ `
@@ -56,7 +57,7 @@ Adaptation field extension flag       (EX ) :  1 bits
 
 =============================================================================================================================================================================
 */
-
+/*
 class xTS
 {
 public:
@@ -71,22 +72,38 @@ public:
   static constexpr uint32_t ExtendedClockFrequency_kHz    =    27000; //kHz
   static constexpr uint32_t BaseToExtendedClockMultiplier =      300;
 };
-
+*/
 //=============================================================================================================================================================================
 
-class TS_Packet
-{
-protected:
-  uint8_t H_SB = 0, H_E = 0, H_S = 0, H_T = 0, H_TSC = 0, H_AFC = 0, H_CC = 0,
-           AF_AFL = 0, AF_DC = 0, AF_RA = 0, AF_ESP = 0, AF_PR = 0, AF_OR = 0, AF_SP = 0, AF_TP = 0, AF_EX = 0;
+class TS_Packet{
+public:
+    uint8_t H_SB,     // Sync byte
+            H_TE,     // Transport error
+            H_PUS,    // Payload unit star
+            H_TP,     // Transport priority 
+            H_TSC,    // Transport scrambling control 
+            H_AFC,    // Adaptation field control 
+            H_CC,     // Continuity counter
 
-  uint16_t H_PID = 0;
+            AF_AFL,   // Adaptation field length 
+            AF_D,     // Discontinuity
+            AF_RA,    // Random access
+            AF_ESP,   // Elementary stream priority
+            AF_PCR,   // PCR
+            AF_OPCR,  // OPCR
+            AF_SP,    // Splicing point
+            AF_TPD,   // Transport private data
+            AF_AFE;   // Adaptation field extension
 
-  uint8_t* payload;
+  uint16_t  H_PID;    // PID
 
   bool isPayload;
+  uint8_t* payload;
+  uint32_t sizeOfPayload;
 
 public:
+  TS_Packet();
+
   void ParseHeader(const uint8_t* Input);
   void PrintHeader() const;
 
@@ -95,26 +112,70 @@ public:
 
   void ParsePayload(const uint8_t* Input, uint8_t H_AFC, uint8_t AF_AFL);
   void PrintIsPayload() const;
-  //void  PrintAdaptationField() const;
+  void PrinttPayload(uint8_t x);
 
+  uint8_t Get_H_PUS();
+  uint16_t Get_H_PID();
+  uint8_t Get_H_CC();
+
+  uint8_t* GetPayload();
+  uint32_t GetSizeOfPayload();
 };
 
 //=============================================================================================================================================================================
 
-class PES_Packet
-{
-protected:
+class PES_Packet{
+public:
+  bool isPreInit,
+       isInit,
+       isFill,
+       isCutPayload;
+
+  uint32_t H_PSCP;    // Packet start code prefix
+  uint8_t  H_SID;     // Sream ID
+  uint16_t H_PESPL;   // PES packet length
+
+  uint8_t H_TEN,      // '10'
+          H_PESSC,    // PES scrambling control
+          H_PESP,     // PES priority
+          H_DAI,      // Data alignment indicator
+          H_C,        // Copyright
+          H_OOC,      // Original or copy
+          H_PTSDTSF,  // PTS DTS flags
+          H_ESCRF,    // ESCR flag
+          H_ESRF,     // ES rate flag
+          H_DSMTMF,   // DSM trick mode flag
+          H_ACIF,     // Additional copy info flag
+          H_PESCRCF,  // PES CRC flag
+          H_PESEF,    // PES extension flag
+          H_PESHDL;   // PES header data length 
+
+  const uint8_t* tmp_payload;
+
+  uint16_t headerLength;
+
+  uint8_t* arrayOfPayload;
+  uint16_t positionInArray;
+  uint16_t lastPositionInPayload;
 
 public:
+  PES_Packet();
 
+  bool Builder(const uint8_t* Input, uint32_t sizeoOfInput, uint32_t tempLastPositionInPayload);
+
+  void Init(const uint8_t* Input);
+  bool IsInit();
   
-};
+  void Fill(const uint8_t* Input, uint32_t sizeOfInput, uint32_t tempLastPositionInPayload);
+  bool IsFill();
 
-//=============================================================================================================================================================================
-/**
- * PES tablica dynamiczna []
- * 
- * 
- * 
- * 
- **/
+  bool IsCutPayload();
+
+  const uint8_t* GetTmpPayload();
+  void PrinttTempPayload(uint8_t x);
+
+  void ParseAditionalHeader();
+  void PrintHeader() const;
+
+  uint16_t GetlastPositionInPayload();
+};
