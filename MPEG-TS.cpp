@@ -8,7 +8,7 @@ int main(){
   
   bool SHOW_ID     = true,  // TS ID
        SHOW_TS_HD  = true,  // TS Header
-       SHOW_TS_AF  = false,  // TS Adaptation Field
+       SHOW_TS_AF  = true,  // TS Adaptation Field
        SHOW_TS_PL  = false,  // TS Payload
        SHOW_PES_ST = true;   // PES status
 
@@ -30,7 +30,7 @@ int main(){
 
   TS_Packet *arrayOfTSpacket = new TS_Packet[length/188];
 
-  PES_Packet *arrayOfPESpacket = new PES_Packet[100000]; //tymczasowe rozw LISTA
+  PES_Packet *arrayOfPESpacket = new PES_Packet[10000000]; //tymczasowe rozw LISTA
 
   uint8_t *buffer = new uint8_t[size];
 
@@ -54,7 +54,7 @@ int main(){
             printf("\n------------------------------------------------------------\nERROR! WRONG CONTINUITY COUNTER! DATA LOST! FOR PID: %d\n  parsing continue for PID = %d\n------------------------------------------------------------\n", arrayOfTSpacket[i].Get_H_PID(),PID);
             continue; // what now?
           } else{
-            printf("\n------------------------------------------------------------\nERROR! WRONG CONTINUITY COUNTER! DATA LOST! FOR PID: %d\n  FATAL ERROR! PARSING BREAK FOR PID: %d\n------------------------------------------------------------\n", arrayOfTSpacket[i].Get_H_PID(),PID);
+            printf("\n------------------------------------------------------------\nERROR! WRONG CONTINUITY COUNTER! DATA LOST! FOR PID: %d\n  FATAL ERROR! PARSING BREAK FOR PID: %d\n    TS ID: %d\n    CC: %d\n    Expected CC: %d\n    PES ID:%d\n------------------------------------------------------------\n", arrayOfTSpacket[i].Get_H_PID(),PID,i,arrayOfTSpacket[i].Get_H_CC(),CC_control,PES_ID);
             break; // what now?
           }
           //SPRAWDZIC CO TU SIE DZIEJE?????????????????????????????????????????????????????????????????????????????????????? posprawdzac dane jakie tam daje
@@ -73,13 +73,13 @@ int main(){
       if(arrayOfTSpacket[i].Get_H_PID() == PID){
         if(arrayOfPESpacket[PES_ID].isPreInit == true && arrayOfPESpacket[PES_ID].isFill == false){
           if(arrayOfTSpacket[i].Get_H_CC() == 0){
-            printf("<s>---STARTED  ");
+            printf("<s>---------");
             arrayOfPESpacket[PES_ID].PrintHeader();
           } else{
             printf(" |");
           }
         } else if(arrayOfPESpacket[PES_ID-1].isPreInit == true && arrayOfPESpacket[PES_ID-1].isFill == true){
-          printf("[f]---FINISHED Total length: %d", arrayOfPESpacket[PES_ID-1].H_PESPL + 6 + arrayOfPESpacket[PES_ID-1].H_PESHDL);
+          printf("[f]---------Total length: %d", arrayOfPESpacket[PES_ID-1].H_PESPL + 6 + arrayOfPESpacket[PES_ID-1].H_PESHDL);
         }
       }
     }
