@@ -38,15 +38,15 @@ void TS_Packet::ParseHeader(const uint8_t* Input){
     tmp = xSwapBytes32(tmp);
 
     uint32_t H_SBmask =   0b11111111000000000000000000000000,
-             H_TEmask =    0b00000000100000000000000000000000,
-             H_PUSmask =    0b00000000010000000000000000000000,
-             H_TPmask =    0b00000000001000000000000000000000,
+             H_TEmask =   0b00000000100000000000000000000000,
+             H_PUSmask =  0b00000000010000000000000000000000,
+             H_TPmask =   0b00000000001000000000000000000000,
              H_PIDmask =  0b00000000000111111111111100000000,
              H_TSCmask =  0b00000000000000000000000011000000,
              H_AFCmask =  0b00000000000000000000000000110000,
              H_CCmask =   0b00000000000000000000000000001111;
 
-    uint32_t AF_AFLmask =   0b11111111000000000000000000000000;    
+    uint32_t AF_AFLmask = 0b11111111000000000000000000000000;    
 
     uint32_t tmp_H_SB = tmp & H_SBmask;
     tmp_H_SB >>= 24;
@@ -151,7 +151,7 @@ void TS_Packet::ParseAdaptationField(const uint8_t* Input){
 void TS_Packet::PrintAdaptationField() const{   
     if(H_AFC == 2 || H_AFC ==3){
 
-        printf("AF: AFL=%2d DC=%1d RA=%1d ESP=%1d PR=%1d OR=%1d SP=%1d TP=%1d EX=%1d ",AF_AFL, AF_D, AF_RA, AF_ESP, AF_PCR, AF_OPCR, AF_SP, AF_TPD, AF_AFE);
+        printf("AF: AFL=%3d DC=%1d RA=%1d ESP=%1d PR=%1d OR=%1d SP=%1d TP=%1d EX=%1d ",AF_AFL, AF_D, AF_RA, AF_ESP, AF_PCR, AF_OPCR, AF_SP, AF_TPD, AF_AFE);
     }
 }
 
@@ -185,10 +185,10 @@ void TS_Packet::PrintIsPayload() const{
 
     switch(isPayload){
         case true:
-            printf("Pakiet zawiera Payload. ");
+            printf("|P| ");
         break;
         case false:
-            printf("Pakiet NIE zawiera Payload! ");
+            printf("|_| ");
         break;
     }
 }
@@ -313,9 +313,6 @@ void PES_Packet::Init(const uint8_t* Input){
 }
 
 void PES_Packet::Fill(const uint8_t* Input, uint32_t sizeOfInput, uint32_t tempLastPositionInPayload){
-    // dostaje caly Payload
-    // musze znac jego dlugosc
-    // aktualny counter oraz jaki maxymalny czyli dlugosc bajtow
     lastPositionInPayload = tempLastPositionInPayload;
     for(uint8_t i = lastPositionInPayload; i < sizeOfInput; i++){
         if(positionInArray < H_PESPL){
@@ -332,6 +329,7 @@ void PES_Packet::Fill(const uint8_t* Input, uint32_t sizeOfInput, uint32_t tempL
 
 void PES_Packet::ParseAditionalHeader(){
     if (H_SID != 0xBC && H_SID != 0xBE && H_SID != 0xBF && H_SID != 0xF0 && H_SID != 0xF1 && H_SID != 0xFF && H_SID != 0xF2 && H_SID != 0xF8){
+
         uint16_t temp = (arrayOfPayload[6]) | (arrayOfPayload[7] << 8);
         temp = xSwapBytes16(temp);
 
@@ -429,6 +427,10 @@ void PES_Packet::PrintHeader() const{
     } else{
         printf("PES packet is empty!");
     }
+}
+
+uint8_t* PES_Packet::GetPayloadFromArray(uint32_t i){
+    return &arrayOfPayload[i];
 }
 
 const uint8_t* PES_Packet::GetTmpPayload(){

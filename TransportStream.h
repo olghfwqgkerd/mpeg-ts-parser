@@ -57,23 +57,6 @@ Adaptation field extension flag       (EX ) :  1 bits
 
 =============================================================================================================================================================================
 */
-/*
-class xTS
-{
-public:
-  static constexpr uint32_t TS_PacketLength = 188;
-  static constexpr uint32_t TS_HeaderLength = 4;
-
-  static constexpr uint32_t PES_HeaderLength = 6;
-
-  static constexpr uint32_t BaseClockFrequency_Hz         =    90000; //Hz
-  static constexpr uint32_t ExtendedClockFrequency_Hz     = 27000000; //Hz
-  static constexpr uint32_t BaseClockFrequency_kHz        =       90; //kHz
-  static constexpr uint32_t ExtendedClockFrequency_kHz    =    27000; //kHz
-  static constexpr uint32_t BaseToExtendedClockMultiplier =      300;
-};
-*/
-//=============================================================================================================================================================================
 
 class TS_Packet{
 public:
@@ -117,6 +100,7 @@ public:
   uint8_t Get_H_PUS();
   uint16_t Get_H_PID();
   uint8_t Get_H_CC();
+  uint8_t Get_H_S();
 
   uint8_t* GetPayload();
   uint32_t GetSizeOfPayload();
@@ -170,6 +154,8 @@ public:
   bool IsFill();
 
   bool IsCutPayload();
+
+  uint8_t* GetPayloadFromArray(uint32_t i);
 
   const uint8_t* GetTmpPayload();
   void PrinttTempPayload(uint8_t x);
