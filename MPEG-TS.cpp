@@ -7,11 +7,11 @@
 int main(){
   //=============================================================================================================================================================================
   
-  bool SHOW_ID     = false,   // TS ID
-       SHOW_TS_HD  = false,   // TS Header
-       SHOW_TS_AF  = false,   // TS Adaptation Field
-       SHOW_TS_PL  = false,   // TS Payload
-       SHOW_PES_ST = false;   // PES status
+  bool SHOW_ID     = true,   // TS ID
+       SHOW_TS_HD  = true,   // TS Header
+       SHOW_TS_AF  = true,   // TS Adaptation Field
+       SHOW_TS_PL  = true,   // TS Payload
+       SHOW_PES_ST = true;   // PES status
 
   const uint16_t choosedPID = 136;    // Packet Identifier
   const uint8_t size = 188;
