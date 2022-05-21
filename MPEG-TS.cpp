@@ -7,10 +7,17 @@
 int main(){
   //=============================================================================================================================================================================
   
+<<<<<<< HEAD
   bool SHOW_ID     = true,   // TS ID
        SHOW_TS_HD  = true,   // TS Header
        SHOW_TS_AF  = true,   // TS Adaptation Field
        SHOW_TS_PL  = true,   // TS Payload
+=======
+  bool SHOW_ID     = true,  // TS ID
+       SHOW_TS_HD  = true,  // TS Header
+       SHOW_TS_AF  = true,  // TS Adaptation Field
+       SHOW_TS_PL  = false,  // TS Payload
+>>>>>>> 1a06c2e2f598578b377633086f1bc96eb0c3db06
        SHOW_PES_ST = true;   // PES status
 
   const uint16_t choosedPID = 136;    // Packet Identifier
@@ -34,7 +41,11 @@ int main(){
     length = ftell(inputFile);
     fseek(inputFile, 0L, SEEK_SET);
 
+<<<<<<< HEAD
     packetNumber = length/188;
+=======
+  PES_Packet *arrayOfPESpacket = new PES_Packet[10000000]; //tymczasowe rozw LISTA
+>>>>>>> 1a06c2e2f598578b377633086f1bc96eb0c3db06
 
     TS_Packet *arrayOfTSpacket = new TS_Packet[length/188];   //
                                                               //tymczasowe rozwiązania w przyszlosci moze na liscie
@@ -73,9 +84,38 @@ int main(){
             printf("\n------------------------------------------------------------\nERROR! WRONG CONTINUITY COUNTER! DATA LOST! FOR PID: %d\n  parsing continue for PID = %d\n------------------------------------------------------------\n", arrayOfTSpacket[i].Get_H_PID(),choosedPID);
             continue;
           } else{
+<<<<<<< HEAD
             printf("\n------------------------------------------------------------\nERROR! WRONG CONTINUITY COUNTER! DATA LOST! FOR PID: %d\n  FATAL ERROR! PARSING BREAK FOR PID: %d\n    TS ID: %d\n    CC: %d\n    Expected CC: %d\n    PES ID:%d\n------------------------------------------------------------\n", arrayOfTSpacket[i].Get_H_PID(),choosedPID,i,arrayOfTSpacket[i].Get_H_CC(),CC_control,PES_ID);
             break;
           }
+=======
+            printf("\n------------------------------------------------------------\nERROR! WRONG CONTINUITY COUNTER! DATA LOST! FOR PID: %d\n  FATAL ERROR! PARSING BREAK FOR PID: %d\n    TS ID: %d\n    CC: %d\n    Expected CC: %d\n    PES ID:%d\n------------------------------------------------------------\n", arrayOfTSpacket[i].Get_H_PID(),PID,i,arrayOfTSpacket[i].Get_H_CC(),CC_control,PES_ID);
+            break; // what now?
+          }
+          //SPRAWDZIC CO TuuU SIE DZIEJE???????????????????????????????????????????????????????????????????????????????????????? posprawdzac dane jakie tam daje
+        }
+        
+      //}else if(arrayOfPESpacket[PES_ID].IsCutPayload()){
+      //  PES_ID++;
+      //  arrayOfPESpacket[PES_ID].Builder(arrayOfTSpacket[i].GetPayload(), arrayOfTSpacket[i].GetSizeOfPayload(),arrayOfPESpacket[PES_ID-1].GetlastPositionInPayload());
+      //}
+    }
+    if(SHOW_ID) printf("%010d ", i);
+    if(SHOW_TS_HD) arrayOfTSpacket[i].PrintHeader();
+    if(SHOW_TS_AF) arrayOfTSpacket[i].PrintAdaptationField();
+    if(SHOW_TS_PL) arrayOfTSpacket[i].PrintIsPayload();
+    if(SHOW_PES_ST){
+      if(arrayOfTSpacket[i].Get_H_PID() == PID){
+        if(arrayOfPESpacket[PES_ID].isPreInit == true && arrayOfPESpacket[PES_ID].isFill == false){
+          if(arrayOfTSpacket[i].Get_H_CC() == 0){
+            printf("<s>---------");
+            arrayOfPESpacket[PES_ID].PrintHeader();
+          } else{
+            printf(" |");
+          }
+        } else if(arrayOfPESpacket[PES_ID-1].isPreInit == true && arrayOfPESpacket[PES_ID-1].isFill == true){
+          printf("[f]---------Total length: %d", arrayOfPESpacket[PES_ID-1].H_PESPL + 6 + arrayOfPESpacket[PES_ID-1].H_PESHDL);
+>>>>>>> 1a06c2e2f598578b377633086f1bc96eb0c3db06
         }
       }
       
